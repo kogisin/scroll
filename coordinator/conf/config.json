@@ -7,19 +7,11 @@
     "batch_collection_time_sec": 180,
     "chunk_collection_time_sec": 180,
     "verifier": {
-      "mock_mode": true,
-      "low_version_circuit": {
-        "params_path": "params",
+      "min_prover_version": "v4.4.45",
+      "verifiers": [{
         "assets_path": "assets",
-        "fork_name": "darwin",
-        "min_prover_version": "v4.4.43"
-      },
-      "high_version_circuit": {
-        "params_path": "params",
-        "assets_path": "assets",
-        "fork_name": "darwinV2",
-        "min_prover_version": "v4.4.45"
-      }
+        "fork_name": "euclidV2"
+      }]
     }
   },
   "db": {
@@ -29,7 +21,10 @@
     "maxIdleNum": 20
   },
   "l2": {
-    "chain_id": 111
+    "chain_id": 111,
+    "l2geth": {
+      "endpoint": "not need to specified for mocking"
+    }
   },
   "auth": {
     "secret": "prover secret key",

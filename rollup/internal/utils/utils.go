@@ -13,19 +13,13 @@ type ChunkMetrics struct {
 	NumBlocks           uint64
 	TxNum               uint64
 	L2Gas               uint64
-	CrcMax              uint64
 	FirstBlockTimestamp uint64
-
-	L1CommitCalldataSize uint64
-	L1CommitGas          uint64
 
 	L1CommitBlobSize                   uint64
 	L1CommitUncompressedBatchBytesSize uint64
 
 	// timing metrics
-	EstimateGasTime          time.Duration
-	EstimateCalldataSizeTime time.Duration
-	EstimateBlobSizeTime     time.Duration
+	EstimateBlobSizeTime time.Duration
 }
 
 // CalculateChunkMetrics calculates chunk metrics.
@@ -42,30 +36,9 @@ func CalculateChunkMetrics(chunk *encoding.Chunk, codecVersion encoding.CodecVer
 	}
 
 	var err error
-	metrics.CrcMax, err = chunk.CrcMax()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get crc max, version: %v, err: %w", codecVersion, err)
-	}
-
 	codec, err := encoding.CodecFromVersion(codecVersion)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get codec from version: %v, err: %w", codecVersion, err)
-	}
-
-	metrics.EstimateGasTime, err = measureTime(func() error {
-		metrics.L1CommitGas, err = codec.EstimateChunkL1CommitGas(chunk)
-		return err
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to estimate chunk L1 commit gas, version: %v, err: %w", codecVersion, err)
-	}
-
-	metrics.EstimateCalldataSizeTime, err = measureTime(func() error {
-		metrics.L1CommitCalldataSize, err = codec.EstimateChunkL1CommitCalldataSize(chunk)
-		return err
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to estimate chunk L1 commit calldata size, version: %v, err: %w", codecVersion, err)
 	}
 
 	metrics.EstimateBlobSizeTime, err = measureTime(func() error {
@@ -84,16 +57,11 @@ type BatchMetrics struct {
 	NumChunks           uint64
 	FirstBlockTimestamp uint64
 
-	L1CommitCalldataSize uint64
-	L1CommitGas          uint64
-
 	L1CommitBlobSize                   uint64
 	L1CommitUncompressedBatchBytesSize uint64
 
 	// timing metrics
-	EstimateGasTime          time.Duration
-	EstimateCalldataSizeTime time.Duration
-	EstimateBlobSizeTime     time.Duration
+	EstimateBlobSizeTime time.Duration
 }
 
 // CalculateBatchMetrics calculates batch metrics.
@@ -106,22 +74,6 @@ func CalculateBatchMetrics(batch *encoding.Batch, codecVersion encoding.CodecVer
 	codec, err := encoding.CodecFromVersion(codecVersion)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get codec from version: %v, err: %w", codecVersion, err)
-	}
-
-	metrics.EstimateGasTime, err = measureTime(func() error {
-		metrics.L1CommitGas, err = codec.EstimateBatchL1CommitGas(batch)
-		return err
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to estimate batch L1 commit gas, version: %v, err: %w", codecVersion, err)
-	}
-
-	metrics.EstimateCalldataSizeTime, err = measureTime(func() error {
-		metrics.L1CommitCalldataSize, err = codec.EstimateBatchL1CommitCalldataSize(batch)
-		return err
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to estimate batch L1 commit calldata size, version: %v, err: %w", codecVersion, err)
 	}
 
 	metrics.EstimateBlobSizeTime, err = measureTime(func() error {

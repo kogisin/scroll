@@ -90,20 +90,12 @@ func (c *CoordinatorApp) MockConfig(store bool) error {
 	cfg.ProverManager = &coordinatorConfig.ProverManager{
 		ProversPerSession: 1,
 		Verifier: &coordinatorConfig.VerifierConfig{
-			MockMode: true,
-			LowVersionCircuit: &coordinatorConfig.CircuitConfig{
-				ParamsPath:       "",
-				AssetsPath:       "",
-				ForkName:         "darwin",
-				MinProverVersion: "v4.4.57",
+			MinProverVersion: "v4.4.89",
+			Verifiers: []coordinatorConfig.AssetConfig{{
+				AssetsPath: "",
+				ForkName:   "euclidV2",
 			},
-			HighVersionCircuit: &coordinatorConfig.CircuitConfig{
-				ParamsPath:       "",
-				AssetsPath:       "",
-				ForkName:         "darwinV2",
-				MinProverVersion: "v4.4.89",
-			},
-		},
+			}},
 		BatchCollectionTimeSec: 60,
 		ChunkCollectionTimeSec: 60,
 		SessionAttempts:        10,
